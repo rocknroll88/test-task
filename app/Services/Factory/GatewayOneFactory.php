@@ -3,15 +3,15 @@
 namespace App\Services\Factory;
 
 use App\Dto\GatewayDto;
-use App\Models\Merchant;
-use App\Services\GatewayOneService;
-use App\Services\PaymentGatewayInterface;
+use App\Services\CheckSignOneService;
+use App\Services\CheckSignInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class GatewayOneFactory implements GatewayFactoryInterface
 {
-    public function __construct(private GatewayOneService $gatewayOneService){
+    public function __construct(private CheckSignOneService $oneService)
+    {
     }
 
     public function getDto(Request $request): GatewayDto
@@ -25,7 +25,7 @@ class GatewayOneFactory implements GatewayFactoryInterface
             'amount_paid' => 'integer',
             'timestamp' => 'string',
         ]);
-        
+
 
         $attributes = $request->all();
         return new GatewayDto(
@@ -42,18 +42,8 @@ class GatewayOneFactory implements GatewayFactoryInterface
         );
     }
 
-    public function getService(): PaymentGatewayInterface
+    public function getService() : CheckSignInterface
     {
-        return $this->gatewayOneService;
-    }
-
-    public function checkSign(Request $request, Merchant $merchant, GatewayDto $dto)
-    {
-        $attributes = $request->all();
-        ksort($attributes);
-        unset($attributes['sign']);
-        $newSign = implode(':', $attributes) . $merchant->merchant_key;
-        return hash('sha256', $newSign) === $dto->sign;
-        
+        return $this->oneService;
     }
 }

@@ -3,15 +3,16 @@
 namespace App\Services\Factory;
 
 use App\Dto\GatewayDto;
-use App\Services\GatewayTwoService;
-use App\Services\PaymentGatewayInterface;
+use App\Services\CheckSignTwoService;
+use App\Services\CheckSignInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Merchant;
+use App\Services\CheckSignOneService;
 
 class GatewayTwoFactory implements GatewayFactoryInterface
 {
-    public function __construct(private GatewayTwoService $gatewayTwoService)
+    public function __construct(private CheckSignTwoService $twoService)
     {
     }
 
@@ -42,16 +43,8 @@ class GatewayTwoFactory implements GatewayFactoryInterface
         );
     }
 
-    public function getService(): PaymentGatewayInterface
+    public function getService() : CheckSignInterface
     {
-        return $this->gatewayTwoService;
-    }
-
-    public function checkSign(Request $request, Merchant $merchant, GatewayDto $dto)
-    {
-        $attributes  = $request->all();
-        ksort($attributes);
-        $newSign = implode('.', $attributes) . $merchant->merchant_key;
-        return hash('md5', $newSign) === $dto->sign;
+        return $this->twoService;
     }
 }

@@ -3,22 +3,10 @@
 namespace App\Services;
 
 use App\Dto\GatewayDto;
-use App\Models\Merchant;
 use App\Models\Payment;
 
-class GatewayTwoService implements PaymentGatewayInterface
+class PaymentService
 {
-    // public function checkSign(GatewayDto $dto,  Merchant $merchant): bool
-    // {
-    //     // $attributes  = $dto->getParametersForSign();
-    //     // dd($attributes);
-    //     // ksort($attributes);
-    //     // $newSign = implode('.', $attributes) . $merchant->merchant_key;
-
-    //     // dd($newSign);
-    //     // return hash('md5', $newSign) === $dto->sign;
-    // }
-
     public function savePayment(GatewayDto $dto): void
     {
         $payment = Payment::find($dto->paymentId);
